@@ -20,6 +20,8 @@ package types
 import (
 	"encoding/binary"
 	"fmt"
+	"github.com/ethereum/go-ethereum/mst"
+	"github.com/syndtr/goleveldb/leveldb"
 	"io"
 	"math/big"
 	"reflect"
@@ -204,15 +206,19 @@ type storageblock struct {
 func NewBlock(header *Header, txs []*Transaction, uncles []*Header, receipts []*Receipt) *Block {
 	b := &Block{header: CopyHeader(header), td: new(big.Int)}
 
-	////some option about index database
-	//db_invert, _ := leveldb.OpenFile("path/to/db_invert", nil)
-	//defer db_invert.Close()
-	//db_mst, _ := leveldb.OpenFile("path/to/db_mst", nil)
-	//defer db_mst.Close()
-	//index := mst.Inverted_list{Db: db_invert}
-	//index.RenewList()
-	//preMst := mst.MST{RootHash:header.PreMstHash, Db:db_mst}
-	//preMst.ReNewMst()
+	//some option about index database
+	db_invert, _ := leveldb.OpenFile("path/to/db_invert", nil)
+	defer db_invert.Close()
+	db_mst, _ := leveldb.OpenFile("path/to/db_mst", nil)
+	defer db_mst.Close()
+	index := mst.Inverted_list{Db:db_invert}
+	if header.PreMstHash != [common.HashLength]byte{} {
+		index.RenewList()
+	}
+	preMst := mst.MST{RootHash:header.PreMstHash, Db:db_mst}
+	if header.PreMstHash != [common.HashLength]byte{} {
+		preMst.ReNewMst()
+	}
 
 	// TODO: panic if len(txs) != len(receipts)
 	if len(txs) == 0 {
@@ -240,12 +246,13 @@ func NewBlock(header *Header, txs []*Transaction, uncles []*Header, receipts []*
 		}
 	}
 
-	//var filekv mst.File
-	//for i := range txs{
-	//	filekv = mst.File{Name:txs[i].Filename(),Keys:txs[i].Key()}
-	//	mst.CreateIndex(filekv,uint(header.Number.Int64()),&index, &preMst)
-	//}
-	//b.header.MstHash = preMst.RootHash
+	var filekv mst.File
+	for i := range txs{
+		filekv = mst.File{Name:txs[i].Filename(),Keys:txs[i].Key()}
+		mst.CreateIndex(filekv,uint(header.Number.Int64() + 1),&index, &preMst)
+	}
+	preMst.PutRootHash()
+	b.header.MstHash = preMst.RootHash
 
 	return b
 }

@@ -2,7 +2,9 @@ package mst
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/syndtr/goleveldb/leveldb"
 	"strings"
@@ -50,8 +52,10 @@ func (t *MST) putDb(db *leveldb.DB) {
 	t.Db = db
 }
 
-func (t *MST) putRootHash() {
-	t.RootHash = t.Root.hash
+func (t *MST) PutRootHash() {
+	if t.Root.hash != [common.HashLength]byte{}{
+		t.RootHash = t.Root.hash
+	}
 }
 
 func (t *MST) root_insert(in index_info) {
@@ -250,7 +254,8 @@ func (t *MST) printMst() {
 
 func (node1 *node) printNode() {
 	fmt.Printf("parent: %p", node1.parent)
-	fmt.Print(" ", "keys:", node1.key, " ", "value:", node1.value, " ", "isLeaf: ", node1.isLeaf, " ", "isExtend: ", node1.isExtend, " ", "hash: ", node1.hash, " ")
+	str := node1.hash[:]
+	fmt.Print(" ", "keys:", node1.key, " ", "value:", node1.value, " ", "isLeaf: ", node1.isLeaf, " ", "isExtend: ", node1.isExtend, " ", "hash: ",hex.EncodeToString(str), " ")
 }
 
 func (node1 *node) searchNode(keys []string) []uint {

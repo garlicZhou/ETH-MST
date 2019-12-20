@@ -20,7 +20,7 @@ func TestMstInsert(t *testing.T) {
 	mst.root_insert(index_info{key: []string{"游泳","潜泳","台球"},pos:60})
 	mst.root_insert(index_info{key: []string{"篮球","网球"},pos:70})
 	mst.root_insert(index_info{key: []string{"足球","排球"},pos:80})
-	mst.putRootHash()
+	mst.PutRootHash()
 	mst.printMst()
 	fmt.Println("查询")
 	keys1 := []string{"潜泳"}
