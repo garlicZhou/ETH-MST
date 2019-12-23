@@ -216,9 +216,8 @@ func NewBlock(header *Header, txs []*Transaction, uncles []*Header, receipts []*
 		index.RenewList()
 	}
 	preMst := mst.MST{RootHash:header.PreMstHash, Db:db_mst}
-	if header.PreMstHash != [common.HashLength]byte{} {
-		preMst.ReNewMst()
-	}
+	preMst.ReNewMst()
+
 
 	// TODO: panic if len(txs) != len(receipts)
 	if len(txs) == 0 {
@@ -249,7 +248,7 @@ func NewBlock(header *Header, txs []*Transaction, uncles []*Header, receipts []*
 	var filekv mst.File
 	for i := range txs{
 		filekv = mst.File{Name:txs[i].Filename(),Keys:txs[i].Key()}
-		mst.CreateIndex(filekv,uint(header.Number.Int64() + 1),&index, &preMst)
+		mst.CreateIndex(filekv,uint(header.Number.Int64()),&index, &preMst)
 	}
 	preMst.PutRootHash()
 	b.header.MstHash = preMst.RootHash

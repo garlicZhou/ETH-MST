@@ -23,15 +23,15 @@ func TestMstInsert(t *testing.T) {
 	mst.PutRootHash()
 	mst.printMst()
 	fmt.Println("查询")
-	keys1 := []string{"潜泳"}
-	fmt.Println(mst.search(keys1))
+	keys1 := []string{"台球"}
+	fmt.Println(mst.Search(keys1))
 
 	mst2 := MST{RootHash: mst.RootHash, Db:mst.Db}
 	mst2.ReNewMst()
 	mst2.printMst()
 	fmt.Println("查询")
 	keys1 = []string{"潜泳"}
-	fmt.Println(mst2.search(keys1))
+	fmt.Println(mst2.Search(keys1))
 }
 //
 func TestSearchMst(t *testing.T) {

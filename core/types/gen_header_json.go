@@ -32,6 +32,8 @@ func (h Header) MarshalJSON() ([]byte, error) {
 		MixDigest   common.Hash    `json:"mixHash"`
 		Nonce       BlockNonce     `json:"nonce"`
 		Hash        common.Hash    `json:"hash"`
+		MstHash     common.Hash    `json:"mstHash"          gencodec:"required"`
+		PreMstHash  common.Hash    `json:"pre_mst_hash"     gencodec:"required"`
 	}
 	var enc Header
 	enc.ParentHash = h.ParentHash
@@ -50,6 +52,8 @@ func (h Header) MarshalJSON() ([]byte, error) {
 	enc.MixDigest = h.MixDigest
 	enc.Nonce = h.Nonce
 	enc.Hash = h.Hash()
+	enc.PreMstHash = h.PreMstHash
+	enc.MstHash = h.MstHash
 	return json.Marshal(&enc)
 }
 
@@ -71,6 +75,8 @@ func (h *Header) UnmarshalJSON(input []byte) error {
 		Extra       *hexutil.Bytes  `json:"extraData"        gencodec:"required"`
 		MixDigest   *common.Hash    `json:"mixHash"`
 		Nonce       *BlockNonce     `json:"nonce"`
+		MstHash     common.Hash    `json:"mstHash"          gencodec:"required"`
+		PreMstHash  common.Hash    `json:"pre_mst_hash"     gencodec:"required"`
 	}
 	var dec Header
 	if err := json.Unmarshal(input, &dec); err != nil {

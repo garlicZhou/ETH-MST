@@ -343,7 +343,7 @@ func (ec *Client) NetworkID(ctx context.Context) (*big.Int, error) {
 // The block number can be nil, in which case the balance is taken from the latest known block.
 func (ec *Client) BalanceAt(ctx context.Context, account common.Address, blockNumber *big.Int) (*big.Int, error) {
 	var result hexutil.Big
-	err := ec.c.CallContext(ctx, &result, "eth_getBalance", account, toBlockNumArg(blockNumber))
+	err := ec.c.CallContext(ctx, &result, "eth_getBalance1", account, toBlockNumArg(blockNumber))
 	return (*big.Int)(&result), err
 }
 
@@ -419,7 +419,7 @@ func toFilterArg(q ethereum.FilterQuery) (interface{}, error) {
 // PendingBalanceAt returns the wei balance of the given account in the pending state.
 func (ec *Client) PendingBalanceAt(ctx context.Context, account common.Address) (*big.Int, error) {
 	var result hexutil.Big
-	err := ec.c.CallContext(ctx, &result, "eth_getBalance", account, "pending")
+	err := ec.c.CallContext(ctx, &result, "eth_getBalance1", account, "pending")
 	return (*big.Int)(&result), err
 }
 

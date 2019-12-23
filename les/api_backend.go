@@ -19,6 +19,8 @@ package les
 import (
 	"context"
 	"errors"
+	"github.com/ethereum/go-ethereum/mst"
+	"github.com/syndtr/goleveldb/leveldb"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts"
@@ -43,6 +45,15 @@ type LesApiBackend struct {
 	extRPCEnabled bool
 	eth           *LightEthereum
 	gpo           *gasprice.Oracle
+}
+
+func (b *LesApiBackend) Search(ctx context.Context, key []string) []uint {
+	block := b.CurrentBlock()
+	db_mst, _ := leveldb.OpenFile("path/to/db_mst", nil)
+	defer db_mst.Close()
+	mst := mst.MST{RootHash: block.MstHash(), Db:db_mst}
+	mst.ReNewMst()
+	return mst.Search(key)
 }
 
 func (b *LesApiBackend) ChainConfig() *params.ChainConfig {

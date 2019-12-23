@@ -327,7 +327,7 @@ func testRequest(ctx context.Context, t *testing.T, client *rpc.Client) bool {
 	var addr common.Address
 	rand.Read(addr[:])
 	c, _ := context.WithTimeout(ctx, time.Second*12)
-	err := client.CallContext(c, &res, "eth_getBalance", addr, "latest")
+	err := client.CallContext(c, &res, "eth_getBalance1", addr, "latest")
 	if err != nil {
 		t.Log("request error:", err)
 	}

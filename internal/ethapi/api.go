@@ -538,6 +538,10 @@ func (s *PublicBlockChainAPI) GetBalance(ctx context.Context, address common.Add
 	return (*hexutil.Big)(state.GetBalance(address)), state.Error()
 }
 
+func (s *PublicBlockChainAPI) Search(ctx context.Context, key []string) []uint {
+		return s.b.Search(ctx,key)
+ }
+
 // Result structs for GetProof
 type AccountResult struct {
 	Address      common.Address  `json:"address"`

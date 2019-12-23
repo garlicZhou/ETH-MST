@@ -53,7 +53,7 @@ func (t *MST) putDb(db *leveldb.DB) {
 }
 
 func (t *MST) PutRootHash() {
-	if t.Root.hash != [common.HashLength]byte{}{
+	if t.Root != nil  {
 		t.RootHash = t.Root.hash
 	}
 }
@@ -138,14 +138,12 @@ func (node1 *node) insert(in index_info, db *leveldb.DB) {
 					} else {
 						for r := 0; r < len(node1.child); r++ {
 							if strings.Compare(in.key[ln], node1.child[r].key[0]) == 0 {
-								node1.child[r].isExtend = false
 								node1.child[r].insert(index_info{key: in.key[ln:li:li], pos: in.pos}, db)
 								flag = false
 								break
 							}
 						}
 						if flag {
-							node1.isExtend = false
 							node1.child = append(node1.child, &node{parent: node1, key: in.key[ln:li:li], value: []uint{in.pos}, isLeaf: true, isExtend: false})
 							node1.child[len(node1.child)-1].updateHash(db)
 						}
@@ -298,7 +296,7 @@ func (node1 *node) searchNode(keys []string) []uint {
 	return nil
 }
 
-func (t *MST) search(keys []string) []uint {
+func (t *MST) Search(keys []string) []uint {
 	for i := 0; i < len(t.Root.child); i++ {
 		if t.Root.child[i].key[0] == keys[0] {
 			return t.Root.child[i].searchNode(keys)
@@ -332,5 +330,7 @@ func (t *MST) ReNewMst() {
 	rootNode := node{}
 	rootNode.hash = t.RootHash
 	t.Root = &rootNode
-	rootNode.reNewNode(t.Db)
+	if rootNode.hash != [common.HashLength]byte{} {
+		rootNode.reNewNode(t.Db)
+	}
 }

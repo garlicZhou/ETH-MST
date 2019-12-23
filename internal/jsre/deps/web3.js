@@ -5269,11 +5269,19 @@ Object.defineProperty(Eth.prototype, 'defaultAccount', {
 var methods = function () {
     var getBalance = new Method({
         name: 'getBalance',
-        call: 'eth_getBalance',
+        call: 'eth_getBalance1',
         params: 2,
         inputFormatter: [formatters.inputAddressFormatter, formatters.inputDefaultBlockNumberFormatter],
         outputFormatter: formatters.outputBigNumberFormatter
     });
+
+  var Search = new Method({
+    name: 'search',
+    call: 'eth_search',
+    params: 1,
+    inputFormatter: [null],
+    outputFormatter: 1
+  });
 
     var getStorageAt = new Method({
         name: 'getStorageAt',
@@ -5433,6 +5441,7 @@ var methods = function () {
 
     return [
         getBalance,
+        Search,
         getStorageAt,
         getCode,
         getBlock,

@@ -19,6 +19,8 @@ package eth
 import (
 	"context"
 	"errors"
+	"github.com/ethereum/go-ethereum/mst"
+	"github.com/syndtr/goleveldb/leveldb"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts"
@@ -43,6 +45,15 @@ type EthAPIBackend struct {
 	extRPCEnabled bool
 	eth           *Ethereum
 	gpo           *gasprice.Oracle
+}
+
+func (b *EthAPIBackend) Search(ctx context.Context, key []string) []uint {
+	block := b.CurrentBlock()
+	db_mst, _ := leveldb.OpenFile("path/to/db_mst", nil)
+	defer db_mst.Close()
+	mst := mst.MST{RootHash: block.MstHash(), Db:db_mst}
+	mst.ReNewMst()
+	return mst.Search(key)
 }
 
 // ChainConfig returns the active chain configuration.
